@@ -4,6 +4,7 @@ open Nessos.Streams
 
 module Stream =
 
+    /// Filters the elements of the input stream.
     let where = Stream.filter
 
     /// <summary>Applies a key-generating function to each element of the input stream and yields a stream of unique keys and a stream of all elements that have each key.</summary>
@@ -32,11 +33,19 @@ type StreamBuilder() =
     member __.Delay(f) =
         f()
 
+    member __.For(items, f ) =
+        items
+            |> Seq.map f
+            |> Stream.concat
+
     member __.Yield(item) =
         Stream.ofSeq [item]
 
     member __.YieldFrom(items) =
         Stream.ofSeq items
+
+    member __.Zero() =
+        Stream.empty
 
 [<AutoOpen>]
 module Builder =

@@ -66,7 +66,7 @@ type UnitTest() =
         assertEqualStreams seqValue streamValue
 
     [<TestMethod>]
-    member __.Builder() =
+    member __.Builder1() =
         let streamA =
             stream {
                 yield 1
@@ -75,3 +75,25 @@ type UnitTest() =
         let streamB =
             [1; 2; 3] |> Stream.ofSeq
         assertEqualStreams streamA streamB
+
+    [<TestMethod>]
+    member __.Builder2() =
+        let data = [| 1L..1000000L |]
+        let predicate x = (x % 2L = 0L)
+        let projection x = x * x
+        let streamValue =
+            (fun () ->
+                data
+                    |> Stream.ofArray
+                    |> Stream.where predicate
+                    |> Stream.map projection)
+                |> time "stream"
+        let builderValue =
+            (fun () ->
+                stream {
+                    for x in data do
+                        if predicate x then
+                            yield projection x
+                })
+                |> time "builder"
+        assertEqualStreams streamValue builderValue
