@@ -4,9 +4,6 @@ open Nessos.Streams
 
 module Stream =
 
-    /// Filters the elements of the input stream.
-    let where = Stream.filter
-
     /// <summary>Applies a key-generating function to each element of the input stream and yields a stream of unique keys and a stream of all elements that have each key.</summary>
     /// <param name="projection">A function to transform items of the input stream into comparable keys.</param>
     /// <param name="source">The input stream.</param>
@@ -24,11 +21,32 @@ module Stream =
         streams
             |> Stream.toSeq
             |> Stream.concat
+
+    let append stream1 stream2 =
+        Stream.concat [stream1; stream2]
+
+    let inline average stream =
+        stream
+            |> Stream.toSeq
+            |> Seq.average
+
+    let inline averageBy projection stream =
+        stream
+            |> Stream.toSeq
+            |> Seq.averageBy projection
+
+    let collect mapping stream =
+        stream
+            |> Stream.map mapping
+            |> concatStreams
+
+    /// Filters the elements of the input stream.
+    let where = Stream.filter
     
 type StreamBuilder() =
 
-    member __.Combine(streamA, streamB) =
-        Stream.concat [streamA; streamB]
+    member __.Combine(stream1, stream2) =
+        Stream.concat [stream1; stream2]
 
     member __.Delay(f) =
         f()

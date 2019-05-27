@@ -16,10 +16,10 @@ type UnitTest() =
         printfn "%s: %A" msg <| stopwatch.Elapsed
         result
 
-    let assertEqualStreams streamA streamB =
-        let arrayA = streamA |> Stream.toArray
-        let arrayB = streamB |> Stream.toArray
-        for (a, b) in Array.zip arrayA arrayB do
+    let assertEqualStreams stream1 stream2 =
+        let array1 = stream1 |> Stream.toArray
+        let array2 = stream2 |> Stream.toArray
+        for (a, b) in Array.zip array1 array2 do
             Assert.AreEqual(a, b)
 
     [<TestMethod>]
@@ -97,3 +97,20 @@ type UnitTest() =
                 })
                 |> time "builder"
         assertEqualStreams streamValue builderValue
+
+    [<TestMethod>]
+    member __.Collect() =
+        let makeArray n =
+            Array.init n id
+        let builderValue =
+            stream {
+                yield! makeArray 1
+                yield! makeArray 2
+                yield! makeArray 3
+            }
+        let collectValue =
+            [1; 2; 3]
+                |> Seq.map makeArray
+                |> Stream.ofSeq
+                |> Stream.collect Stream.ofArray
+        assertEqualStreams builderValue collectValue
