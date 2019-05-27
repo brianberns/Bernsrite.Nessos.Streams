@@ -15,3 +15,11 @@ module Stream =
             |> Stream.groupBy projection
             |> Stream.map (fun (key, grouping) ->
                 key, Stream.ofSeq grouping)
+
+    /// <summary>Concatenates a collection of streams.</summary>
+    /// <param name="streams">The sequence of streams to concatenate.</param>
+    /// <returns>The concatenated stream.</returns>
+    let concatStreams (streams: Stream<Stream<'T>>): Stream<'T> =
+        streams
+            |> Stream.toSeq
+            |> Stream.concat
