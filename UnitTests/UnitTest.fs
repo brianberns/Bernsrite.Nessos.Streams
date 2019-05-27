@@ -19,8 +19,7 @@ type UnitTest() =
     let assertEqualStreams streamA streamB =
         let arrayA = streamA |> Stream.toArray
         let arrayB = streamB |> Stream.toArray
-        Assert.AreEqual(arrayA.Length, arrayB.Length)
-        for (a, b) in Seq.zip arrayA arrayB do
+        for (a, b) in Array.zip arrayA arrayB do
             Assert.AreEqual(a, b)
 
     [<TestMethod>]
@@ -65,3 +64,14 @@ type UnitTest() =
                     |> Stream.concatStreams)
                 |> time "concatStreams"
         assertEqualStreams seqValue streamValue
+
+    [<TestMethod>]
+    member __.Builder() =
+        let streamA =
+            stream {
+                yield 1
+                yield! [2; 3]
+            }
+        let streamB =
+            [1; 2; 3] |> Stream.ofSeq
+        assertEqualStreams streamA streamB
