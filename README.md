@@ -7,7 +7,7 @@ This is a .NET class library that extends Nessos.Streams for F#. The extensions 
 2. Additional `Stream` functions that complement Nessos functions which mix both `Seq` and `Stream`.
    E.g. `Stream.groupByStreams` returns a stream of streams, whereas the Nessos `Stream.groupBy`
    function returns a stream of sequences.
-3. A builder object for stream comprehensions. E.g.
+3. A `stream` builder object for stream comprehensions. E.g.
 ```F#
 let data = [| 1..1000000 |]
 stream {
