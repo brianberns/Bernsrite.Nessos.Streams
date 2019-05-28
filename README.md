@@ -1,8 +1,6 @@
 # Extensions for Nessos streams
 
-## Overview
-
-This is a .NET class library that extends Nessos.Streams. The extensions fall into three categories:
+This is a .NET class library that extends Nessos.Streams for F#. The extensions fall into three categories:
 
 1. Additional `Stream` functions that mirror the built-in F# `Seq` API. E.g. `Stream.append`,
    `Stream.average`, etc.
@@ -18,3 +16,5 @@ stream {
             yield x * x
 }
 ```
+
+Note that these extensions are not necessarily optimized for performance.
