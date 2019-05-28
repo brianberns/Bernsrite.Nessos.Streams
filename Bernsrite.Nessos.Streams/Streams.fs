@@ -156,29 +156,38 @@ module Stream =
             (fun elem1 elem2 -> elem1, elem2)
             stream1
             stream2
-    
+
+/// Builder type for streams.
 type StreamBuilder() =
 
+    /// Combines two streams.
     member __.Combine(stream1, stream2) =
         Stream.concat [stream1; stream2]
 
+    /// Executes the given function.
     member __.Delay(f) =
         f()
 
+    /// Iterates the given items, generating a stream.
     member __.For(items, f ) =
         items
             |> Seq.map f
             |> Stream.concat
 
+    /// Yields the given item as a stream.
     member __.Yield(item) =
         Stream.ofSeq [item]
 
+    /// Yields the given items as a stream.
     member __.YieldFrom(items) =
         Stream.ofSeq items
 
+    /// The empty stream.
     member __.Zero() =
         Stream.empty
 
 [<AutoOpen>]
 module Builder =
+
+    /// Builder object for streams.
     let stream = new StreamBuilder()
