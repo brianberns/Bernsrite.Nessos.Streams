@@ -114,3 +114,10 @@ type UnitTest() =
                 |> Stream.ofSeq
                 |> Stream.collect Stream.ofArray
         assertEqualStreams builderValue collectValue
+
+    [<TestMethod>]
+    member __.Truncate() =
+        let stream =
+            Stream.init 2 id
+                |> Stream.truncate 10
+        Assert.AreEqual(2, stream |> Stream.length)

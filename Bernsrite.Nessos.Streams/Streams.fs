@@ -40,8 +40,74 @@ module Stream =
             |> Stream.map mapping
             |> concatStreams
 
+    let contains value stream =
+        stream
+            |> Stream.tryFind ((=) value)
+            |> Option.isSome
+
+    let distinct stream =
+        stream
+            |> Stream.toSeq
+            |> Seq.distinct
+            |> Stream.ofSeq
+
+    let exactlyOne stream =
+        stream
+            |> Stream.toSeq
+            |> Seq.exactlyOne
+
+    let init count initializer =
+        Seq.init count initializer
+            |> Stream.ofSeq
+
+    let iteri action stream =
+        stream
+            |> Stream.mapi (fun i elem -> i, elem)
+            |> Stream.iter (fun (i, elem) -> action i elem)
+
+    let max stream =
+        stream
+            |> Stream.maxBy id
+
+    let min stream =
+        stream
+            |> Stream.minBy id
+
+    let pairwise stream =
+        stream
+            |> Stream.toSeq
+            |> Seq.pairwise
+            |> Stream.ofSeq
+
+    let skipWhile predicate stream =
+        stream
+            |> Stream.toSeq
+            |> Seq.skipWhile predicate
+            |> Stream.ofSeq
+
+    let sort stream =
+        stream
+            |> Stream.sortBy id
+
+    let sumBy projection stream =
+        stream
+            |> Stream.minBy projection
+            |> Stream.sum
+
+    let tail stream =
+        stream
+            |> Stream.skip 1
+
+    let truncate = Stream.take   // current implementation of `take` actually implements `truncate` functionality
+
     /// Filters the elements of the input stream.
     let where = Stream.filter
+
+    let zip stream1 stream2 =
+        Stream.zipWith
+            (fun elem1 elem2 -> elem1, elem2)
+            stream1
+            stream2
     
 type StreamBuilder() =
 
